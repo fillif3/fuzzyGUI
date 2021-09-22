@@ -4,7 +4,9 @@ class FuzzySet: #interface
     def get_fuzzy_value(self,val):
         pass
 
-    def draw(self,number_of_points=100):
+    def draw(self,fig=None,number_of_points=100):
+        if fig is None:
+            fig = plt.figure(self.label)
         vals=[]
         x=[]
         step=(self.right-self.left)/number_of_points
