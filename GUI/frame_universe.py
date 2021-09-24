@@ -63,7 +63,6 @@ class FrameUniverse(ttk.Frame):
                 pass
         uni = Universe(fuzzy_sets,self.main_label['text'])
         uni.draw(self.figure)
-        plt.show()
 
     def save(self):
         dictionary={}
@@ -75,7 +74,7 @@ class FrameUniverse(ttk.Frame):
                 'points':fsf.getPoints()
             }
         json_object = json.dumps(dictionary, indent=4)
-        with open(self.main_label['text'], "w") as outfile:
+        with open(self.main_label['text']+'.json', "w") as outfile:
             outfile.write(json_object)
 
     def getDataFromJson(self,json):
@@ -93,6 +92,21 @@ class FrameUniverse(ttk.Frame):
             new_frame.setPoints(points)
         self.fuzzy_sets_frames.append(new_frame)
         new_frame.grid(column=0,row=len(self.fuzzy_sets_frames)+2,columnspan=13,sticky='nwse')
+
+class SimpleFrameUniverse(ttk.Frame):
+    def __init__(self, universe,addational_text='', **kw):
+        super().__init__(**kw)
+        self.main_label = ttk.Label(self, text=universe.label+addational_text)
+        self.destroy_button = tk.Button(self, text='destroy set', command=self.destroy)
+        self.universe = universe
+        self.button_draw = tk.Button(self, text='Draw/Update Universe', command=self.universe.draw)
+
+        self.main_label .grid(column=0, row=0)
+        self.button_draw.grid(column=1, row=0, sticky='nwse')
+        self.destroy_button.grid(column=3, row=0,padx=20)
+
+        self.grid_columnconfigure(1, weight=2)
+
 
 class FrameFuzzySet(tk.Frame):
     def __init__(self,name,type, **kw):
@@ -125,3 +139,7 @@ class FrameFuzzySet(tk.Frame):
     def setPoints(self,points):
         for e,p in zip(self.entries_for_fuzzy_set,points):
             e.insert(0,str(p))
+
+class RuleFrame(ttk.Frame):
+    def __init__(self,universes, **kw):
+        super().__init__(**kw)
